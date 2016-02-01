@@ -27,4 +27,4 @@ end
 
 # Application business specific gem
 # Use docker-api for managing docker container
-gem 'docker-api'
+gem 'docker-api', github: 'GoPex/docker-api', branch: 'master'

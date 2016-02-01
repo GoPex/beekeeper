@@ -1,6 +1,6 @@
 require 'test_helper'
 
-class InfoControllerTest < ActionDispatch::IntegrationTest
+class InfosControllerTest < ActionDispatch::IntegrationTest
   test "should get version" do
     get '/info/version'
     assert_response :success
@@ -20,7 +20,7 @@ class InfoControllerTest < ActionDispatch::IntegrationTest
   end
   
   test "should get docker info" do
-    get '/info/docker_info'
+    get '/info/docker'
     assert_response :success
 
     response = JSON.parse(@response.body)

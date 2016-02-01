@@ -1,4 +1,4 @@
-module Beewolf
+module Beekeeper
   # The version of the docker-api gem.
   VERSION = '0.1.0'
 

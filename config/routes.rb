@@ -1,11 +1,14 @@
 Rails.application.routes.draw do
   # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
   scope '/', defaults: { format: :json }, constraints: {format: :json } do
-    get 'info/version', to: 'info#version'
-    get 'info/docker_version', to: 'info#docker_version'
-    get 'info/docker_info', to: 'info#docker_info'
+    resource :info, only: [] do
+      collection do
+        get 'version'
+        get 'docker_version'
+        get 'docker'
+      end
+    end
 
-    post 'container/start', to: 'container#start'
-    post 'container/stop/:id', to: 'container#stop'
+    resources :containers, only: [:create, :destroy]
   end
 end
