@@ -9,6 +9,6 @@ Rails.application.routes.draw do
       end
     end
 
-    resources :containers, only: [:create, :destroy]
+    resources :containers, only: [:index, :create, :destroy]
   end
 end
