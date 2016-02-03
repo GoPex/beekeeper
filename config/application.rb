@@ -29,5 +29,8 @@ module Beekeeper
 
     # Loads lib files
     config.autoload_paths << Rails.root.join('lib')
+
+    # Set logger to STDOUT
+    config.logger = Logger.new(STDOUT)
   end
 end

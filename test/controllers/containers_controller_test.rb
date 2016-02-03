@@ -5,6 +5,7 @@ class ContainersControllerTest < ActionDispatch::IntegrationTest
   def setup
     # Create a test image from a test Dockerfile
     @image = Docker::Image.build_from_dir(Rails.root.join('test', 'fixtures', 'files', '.').to_path, t: 'gopex/beekeeper_test_image:0.1.0')
+    @image_name = @image.json['RepoTags'].join
   end
 
   def teardown
@@ -15,6 +16,7 @@ class ContainersControllerTest < ActionDispatch::IntegrationTest
 
     # Remove created image
     @image.remove(force: true)
+    @image = nil
   end
 
   test "should get index" do
@@ -33,7 +35,28 @@ class ContainersControllerTest < ActionDispatch::IntegrationTest
   test "should create container" do
     post '/containers', params: {
       container: {
-        image: 'docker-registry.gopex.be:5000/gopex/beewolf:0.1.0',
+        image: "#{@image_name}",
+        entrypoint: 'tail',
+        parameters: ['-f', '/dev/null']
+      }
+    }
+    assert_response :success
+
+    response = JSON.parse(@response.body)
+    assert_not_nil response['id']
+    assert_not_nil response['status']
+    assert_nil response['address']['3000/tcp']
+
+    assert_nothing_raised do
+      container = Docker::Container.get(response['id'])
+      assert container.json['State']['Status'] == response['status']
+    end
+  end
+
+  test "should create container with an opened port" do
+    post '/containers', params: {
+      container: {
+        image: "#{@image_name}",
         entrypoint: 'tail',
         parameters: ['-f', '/dev/null'],
         ports: ['3000/tcp']
@@ -44,7 +67,7 @@ class ContainersControllerTest < ActionDispatch::IntegrationTest
     response = JSON.parse(@response.body)
     assert_not_nil response['id']
     assert_not_nil response['status']
-    assert_not_nil response['address']
+    assert_not_nil response['address']['3000/tcp']
 
     assert_nothing_raised do
       container = Docker::Container.get(response['id'])

@@ -13,7 +13,7 @@ class ContainersController < ApplicationController
     permitted_params = container_params
 
     ports = {}
-    permitted_params[:ports].each do |port|
+    permitted_params.fetch(:ports, {}).each do |port|
       ports[port] = [{}]
     end
 
