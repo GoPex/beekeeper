@@ -60,6 +60,13 @@ API documentation
 #### Create a bee
 `POST   /containers(.json)`
 
+##### JSON parameters
+- __container__ `Hash`:
+..- __image__ `String`: Image to use, must be complete if you want to use a private registry as Docker hub is used by default.
+..- __entrypoint__ `String`(optional): Entry point to use when starting the container. This will overwrite any `ENTRYPOINT` defined in the image used.
+..- __parameters__ `[String]`(optional): Parameters used by the entry point when starting the container. This will overwrite any `CMD` defined in the image used.
+..- __ports__ `[String]`(optional): Port to expose when starting the container. This port must be exposed in the image as Beekeeper will not expose port dynamically.
+
 #### Destroy a bee
 `DELETE /containers/:id(.json)`
 
@@ -80,6 +87,7 @@ curl -H 'Content-Type: application/json' -X POST -d '{"container": {"image":"bus
 
 ```shell
 # For this one, as we want to expose a port, we need to build an image with a specific port exposed as Beekeeper will not use non-pre-exposed port while starting a container. You can use the one used for the tests:
+git clone git@bitbucket.org:gopex/beekeeper.git && cd beekeeper
 sudo docker build -t="docker-registry.gopex.be:5000/gopex/beekeeper_test_image:0.1.0" test/fixtures/files/
 
 # Then tell beekeeper to launch a container using the image that we have just created :
