@@ -9,6 +9,6 @@ Rails.application.routes.draw do
       end
     end
 
-    resources :containers, only: [:index, :create, :destroy]
+    resources :bees, only: [:index, :create, :destroy]
   end
 end

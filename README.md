@@ -55,10 +55,10 @@ API documentation
 ### Manage bees
 
 #### Get all the bees
-`GET    /containers(.json)`
+`GET    /bees(.json)`
 
 #### Create a bee
-`POST   /containers(.json)`
+`POST   /bees(.json)`
 
 ##### JSON parameters
 
@@ -69,7 +69,7 @@ API documentation
     - __ports__ `[String] (optional)` - Ports to expose when starting the container. This port must be exposed in the image as Beekeeper will not expose port dynamically.
 
 #### Destroy a bee
-`DELETE /containers/:id(.json)`
+`DELETE /bees/:id(.json)`
 
 Usage examples
 --------------
@@ -80,7 +80,7 @@ Usage examples
 
 ```shell
 # Test beekeeper by creating a bee based upon the busybox
-curl -H 'Content-Type: application/json' -X POST -d '{"container": {"image":"busybox", "entrypoint":"tail", "parameters": ["-f", "/dev/null"]}}' http://localhost:3000/containers
+curl -H 'Content-Type: application/json' -X POST -d '{"container": {"image":"busybox", "entrypoint":"tail", "parameters": ["-f", "/dev/null"]}}' http://localhost:3000/bees
 	=> {"id":"2220068471af577981b8712858199c1cec79a88336809e26ff996dbd56400c10","status":"running","address":{}}%
 ```
 
@@ -92,14 +92,14 @@ git clone git@bitbucket.org:gopex/beekeeper.git && cd beekeeper
 sudo docker build -t="docker-registry.gopex.be:5000/gopex/beekeeper_test_image:0.1.0" test/fixtures/files/
 
 # Then tell beekeeper to launch a container using the image that we have just created :
-curl -H 'Content-Type: application/json' -X POST -d '{"container": {"image":"docker-registry.gopex.be:5000/gopex/beekeeper_test_image:0.1.0", "entrypoint":"tail", "parameters": ["-f", "/dev/null"], "ports": ["3000/tcp"]}}' http://localhost:3000/containers
+curl -H 'Content-Type: application/json' -X POST -d '{"container": {"image":"docker-registry.gopex.be:5000/gopex/beekeeper_test_image:0.1.0", "entrypoint":"tail", "parameters": ["-f", "/dev/null"], "ports": ["3000/tcp"]}}' http://localhost:3000/bees
 	=> {"id":"18f61aa14f5513664b9685ca5c6b8454b6cd6f11e55c260c33ae3dfd4d374802","status":"running","address":{"3000/tcp":[{"HostIp":"0.0.0.0","HostPort":"32800"}]}}
 ```
 
 #### Get all the bees
 
 ```shell
-curl -H 'Content-Type: application/json' -X GET http://localhost:3000/containers/
+curl -H 'Content-Type: application/json' -X GET http://localhost:3000/bees/
     => {"2220068471af577981b8712858199c1cec79a88336809e26ff996dbd56400c10":{"status":"running","address":{}},
         "18f61aa14f5513664b9685ca5c6b8454b6cd6f11e55c260c33ae3dfd4d374802":{"status":"running","address":{"3000/tcp":[{"HostIp":"0.0.0.0","HostPort":"32800"}]}}}
 ```
@@ -107,9 +107,9 @@ curl -H 'Content-Type: application/json' -X GET http://localhost:3000/containers
 #### Destroy previously created bees
 
 ```shell
-curl -H 'Content-Type: application/json' -X DELETE http://localhost:3000/containers/2220068471af577981b8712858199c1cec79a88336809e26ff996dbd56400c10
+curl -H 'Content-Type: application/json' -X DELETE http://localhost:3000/bees/2220068471af577981b8712858199c1cec79a88336809e26ff996dbd56400c10
     => {"id":"2220068471af577981b8712858199c1cec79a88336809e26ff996dbd56400c10","status":"deleted"}
 
-curl -H 'Content-Type: application/json' -X DELETE http://localhost:3000/containers/18f61aa14f5513664b9685ca5c6b8454b6cd6f11e55c260c33ae3dfd4d374802
+curl -H 'Content-Type: application/json' -X DELETE http://localhost:3000/bees/18f61aa14f5513664b9685ca5c6b8454b6cd6f11e55c260c33ae3dfd4d374802
     => {"id":"18f61aa14f5513664b9685ca5c6b8454b6cd6f11e55c260c33ae3dfd4d374802","status":"deleted"}
 ```

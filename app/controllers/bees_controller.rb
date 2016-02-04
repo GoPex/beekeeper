@@ -1,4 +1,4 @@
-class ContainersController < ApplicationController
+class BeesController < ApplicationController
   def index
     bees = {}
     Beekeeper::DockerHelper.get_all_bees.each do |bee|

@@ -1,6 +1,6 @@
 require 'test_helper'
 
-class ContainersControllerTest < ActionDispatch::IntegrationTest
+class BeesControllerTest < ActionDispatch::IntegrationTest
 
   def setup
     # Create a test image from a test Dockerfile
@@ -24,7 +24,7 @@ class ContainersControllerTest < ActionDispatch::IntegrationTest
       @image.run
     end
 
-    get "/containers"
+    get "/bees"
     assert_response :success
 
     response = JSON.parse(@response.body)
@@ -33,7 +33,7 @@ class ContainersControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "should create container" do
-    post '/containers', params: {
+    post '/bees', params: {
       container: {
         image: "#{@image_name}",
         entrypoint: 'tail',
@@ -54,7 +54,7 @@ class ContainersControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "should create container with an opened port" do
-    post '/containers', params: {
+    post '/bees', params: {
       container: {
         image: "#{@image_name}",
         entrypoint: 'tail',
@@ -79,7 +79,7 @@ class ContainersControllerTest < ActionDispatch::IntegrationTest
     container = @image.run
     container_id = container.json['Id']
 
-    delete "/containers/#{container_id}"
+    delete "/bees/#{container_id}"
     assert_response :success
 
     response = JSON.parse(@response.body)
