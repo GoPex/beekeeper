@@ -61,8 +61,9 @@ API documentation
 `POST   /containers(.json)`
 
 ##### JSON parameters
-- __container__ `Hash`
-  - __image__ `String` - Image to use, must be complete if you want to use a private registry as Docker hub is used by default.
+
+###### __container__ `Hash`
+  - __image__ `String` : Image to use, must be complete if you want to use a private registry as Docker hub is used by default.
   - __entrypoint__ `String`(optional) - Entry point to use when starting the container. This will overwrite any `ENTRYPOINT` defined in the image used.
   - __parameters__ `[String]`(optional) - Parameters used by the entry point when starting the container. This will overwrite any `CMD` defined in the image used.
   - __ports__ `[String]`(optional) - Port to expose when starting the container. This port must be exposed in the image as Beekeeper will not expose port dynamically.
