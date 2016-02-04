@@ -61,7 +61,7 @@ API documentation
 `POST   /containers(.json)`
 
 ##### JSON parameters
-1. __container__ `Hash`
+- __container__ `Hash`
   - __image__ `String` - Image to use, must be complete if you want to use a private registry as Docker hub is used by default.
   - __entrypoint__ `String`(optional) - Entry point to use when starting the container. This will overwrite any `ENTRYPOINT` defined in the image used.
   - __parameters__ `[String]`(optional) - Parameters used by the entry point when starting the container. This will overwrite any `CMD` defined in the image used.
