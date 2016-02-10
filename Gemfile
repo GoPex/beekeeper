@@ -14,7 +14,7 @@ gem 'rails', '>= 5.0.0.beta1.1', '< 5.1'
 gem 'puma'
 
 # Use api-auth gem as authentication technique
-gem 'api-auth', github: 'GoPex/api_auth', branch: 'master'
+gem 'api-auth'
 
 # Development and test specific gems
 group :development, :test do
