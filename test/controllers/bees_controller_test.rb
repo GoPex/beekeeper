@@ -4,8 +4,8 @@ class BeesControllerTest < ActionDispatch::IntegrationTest
 
   def setup
     # Create a test image from a test Dockerfile
-    @image = Docker::Image.build_from_dir(Rails.root.join('test', 'fixtures', 'files', '.').to_path, t: 'gopex/beekeeper_test_image:0.1.0')
-    @image_name = @image.json['RepoTags'].join
+    @image = Docker::Image.build_from_dir(Rails.root.join('test', 'fixtures', 'files', '.').to_path, t: "gopex/beekeeper_test_image:#{rand(10000)}")
+    @image_name = @image.json['RepoTags'].first
   end
 
   def teardown
@@ -32,7 +32,7 @@ class BeesControllerTest < ActionDispatch::IntegrationTest
     assert_equal Beekeeper::DockerHelper.get_all_bees.count, response.count
   end
 
-  test "should create container" do
+  test "should create bee" do
     post '/bees', params: {
       container: {
         image: "#{@image_name}",
@@ -45,7 +45,7 @@ class BeesControllerTest < ActionDispatch::IntegrationTest
     response = JSON.parse(@response.body)
     assert_not_nil response['id']
     assert_not_nil response['status']
-    assert_nil response['address']['3000/tcp']
+    assert_nil response['addresses']['3000/tcp']
 
     assert_nothing_raised do
       container = Docker::Container.get(response['id'])
@@ -53,7 +53,7 @@ class BeesControllerTest < ActionDispatch::IntegrationTest
     end
   end
 
-  test "should create container with an opened port" do
+  test "should create bee with an opened port" do
     post '/bees', params: {
       container: {
         image: "#{@image_name}",
@@ -67,7 +67,7 @@ class BeesControllerTest < ActionDispatch::IntegrationTest
     response = JSON.parse(@response.body)
     assert_not_nil response['id']
     assert_not_nil response['status']
-    assert_not_nil response['address']['3000/tcp']
+    assert_not_nil response['addresses']['3000/tcp']
 
     assert_nothing_raised do
       container = Docker::Container.get(response['id'])
@@ -75,7 +75,7 @@ class BeesControllerTest < ActionDispatch::IntegrationTest
     end
   end
 
-  test "should destroy container" do
+  test "should destroy bee" do
     container = @image.run
     container_id = container.json['Id']
 

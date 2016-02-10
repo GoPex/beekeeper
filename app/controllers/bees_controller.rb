@@ -3,8 +3,9 @@ class BeesController < ApplicationController
     bees = {}
     Beekeeper::DockerHelper.get_all_bees.each do |bee|
       bee_json = bee.json
+      bee_addresses = parse_addresses(bee_json)
       bees[bee_json['Id']] = {status: bee_json['State']['Status'],
-                              address: bee_json['NetworkSettings']['Ports']}
+                              addresses: bee_addresses}
     end
     render json: bees
   end
@@ -27,9 +28,11 @@ class BeesController < ApplicationController
     container.start
 
     container_json = container.json
+    container_addresses = parse_addresses(container_json)
+
     render json: {id: container.id,
                   status: container_json['State']['Status'],
-                  address: container_json['NetworkSettings']['Ports']}
+                  addresses: container_addresses}
   end
 
   def destroy
@@ -42,5 +45,18 @@ class BeesController < ApplicationController
 
   def container_params
     params.require(:container).permit(:image, :entrypoint, parameters: [], ports: [])
+  end
+
+  def parse_addresses(container_json)
+    ports = container_json['NetworkSettings']['Ports']
+    container_addresses = {}
+    ports.each do |port_requested, port_exposed|
+      if port_exposed.is_a?(NilClass)
+        container_addresses["#{port_requested}"] = nil
+      else
+        container_addresses["#{port_requested}"] = "#{port_exposed[0]['HostIp']}:#{port_exposed[0]['HostPort']}"
+      end
+    end
+    container_addresses
   end
 end

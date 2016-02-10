@@ -13,6 +13,9 @@ gem 'rails', '>= 5.0.0.beta1.1', '< 5.1'
 # Use Puma as the app server
 gem 'puma'
 
+# Use api-auth gem as authentication technique
+gem 'api-auth', github: 'GoPex/api_auth', branch: 'master'
+
 # Development and test specific gems
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console

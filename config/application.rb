@@ -32,5 +32,8 @@ module Beekeeper
 
     # Set logger to STDOUT
     config.logger = Logger.new(STDOUT)
+
+    # Set unpermitted parameters to raise errors
+    config.action_controller.action_on_unpermitted_parameters = :raise
   end
 end

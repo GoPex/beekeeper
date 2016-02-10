@@ -1,4 +1,11 @@
 GIT
+  remote: git://github.com/GoPex/api_auth.git
+  revision: e2507005a9e5c2665f8096c2b2e37813cee11c45
+  branch: master
+  specs:
+    api-auth (1.5.0)
+
+GIT
   remote: git://github.com/GoPex/docker-api.git
   revision: d509d030ed4f435c90fdb0e03f7a1220d5aa7d2d
   branch: master
@@ -163,6 +170,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  api-auth!
   byebug
   docker-api!
   puma
