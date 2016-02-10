@@ -32,6 +32,17 @@ class BeesControllerTest < ActionDispatch::IntegrationTest
     assert_equal Beekeeper::DockerHelper.get_all_bees.count, response.count
   end
 
+  test "should get show" do
+    container = @image.run
+    container_id = container.json['Id']
+
+    get "/bees/#{container_id}"
+    assert_response :success
+
+    response = JSON.parse(@response.body)
+    assert_equal container_id, response['id']
+  end
+
   test "should create bee" do
     post '/bees', params: {
       container: {

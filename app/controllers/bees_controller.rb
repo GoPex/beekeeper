@@ -7,7 +7,18 @@ class BeesController < ApplicationController
       bees[bee_json['Id']] = {status: bee_json['State']['Status'],
                               addresses: bee_addresses}
     end
+
     render json: bees
+  end
+
+  def show
+    bee = Docker::Container.get(params[:id])
+    bee_json = bee.json
+    bee_addresses = parse_addresses(bee_json)
+
+    render json: {id: params[:id],
+                  status: bee_json['State']['Status'],
+                  addresses: bee_addresses}
   end
 
   def create
@@ -18,26 +29,27 @@ class BeesController < ApplicationController
       ports[port] = [{}]
     end
 
-    container = Docker::Container.create(Image: permitted_params[:image],
-                                         Entrypoint: permitted_params[:entrypoint],
-                                         Cmd: permitted_params[:parameters],
-                                         Labels: { beekeeper: "#{Beekeeper::VERSION}" },
-                                         HostConfig: {
-                                           PortBindings: ports
-                                         })
-    container.start
+    bee = Docker::Container.create(Image: permitted_params[:image],
+                                   Entrypoint: permitted_params[:entrypoint],
+                                   Cmd: permitted_params[:parameters],
+                                   Labels: { beekeeper: "#{Beekeeper::VERSION}" },
+                                   HostConfig: {
+                                    PortBindings: ports
+                                   })
+    bee.start
 
-    container_json = container.json
-    container_addresses = parse_addresses(container_json)
+    bee_json = bee.json
+    bee_addresses = parse_addresses(bee_json)
 
-    render json: {id: container.id,
-                  status: container_json['State']['Status'],
-                  addresses: container_addresses}
+    render json: {id: bee.id,
+                  status: bee_json['State']['Status'],
+                  addresses: bee_addresses}
   end
 
   def destroy
-    container = Docker::Container.get(params[:id])
-    container.delete('force': 'true')
+    bee = Docker::Container.get(params[:id])
+    bee.delete('force': 'true')
+
     render json: {id: params[:id], status: 'deleted'}
   end
 
@@ -47,16 +59,16 @@ class BeesController < ApplicationController
     params.require(:container).permit(:image, :entrypoint, parameters: [], ports: [])
   end
 
-  def parse_addresses(container_json)
-    ports = container_json['NetworkSettings']['Ports']
-    container_addresses = {}
+  def parse_addresses(bee_json)
+    ports = bee_json['NetworkSettings']['Ports']
+    bee_addresses = {}
     ports.each do |port_requested, port_exposed|
       if port_exposed.is_a?(NilClass)
-        container_addresses["#{port_requested}"] = nil
+        bee_addresses["#{port_requested}"] = nil
       else
-        container_addresses["#{port_requested}"] = "#{port_exposed[0]['HostIp']}:#{port_exposed[0]['HostPort']}"
+        bee_addresses["#{port_requested}"] = "#{port_exposed[0]['HostIp']}:#{port_exposed[0]['HostPort']}"
       end
     end
-    container_addresses
+    bee_addresses
   end
 end
