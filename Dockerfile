@@ -1,7 +1,7 @@
 # Uses GoPex ubuntu_rails stock image
-FROM gopex/ubuntu_rails:5.0.0.beta1.1
+FROM gopex/ubuntu_rails:5.0.0.beta2
 MAINTAINER Albin Gilles "albin.gilles@gmail.com"
-ENV REFRESHED_AT 2016-02-03
+ENV REFRESHED_AT 2016-02-11
 
 # Set the port exposed by this application
 EXPOSE 3000

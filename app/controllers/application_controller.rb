@@ -6,7 +6,7 @@ class ApplicationController < ActionController::API
   def api_authenticate
     requester_id = ApiAuth.access_id(request)
 
-    @secret_key = ENV["#{requester_id}_SECRET_KEY"] || nil
+    @secret_key = ENV["#{requester_id}_API_KEY"]
     if not @secret_key
       logger.warn "No secret key found for requester id '#{requester_id}'. Unauthorized !"
       head(:unauthorized)
