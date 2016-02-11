@@ -16,7 +16,6 @@ You can start Beekeeper without configuration with:
 sudo docker run --name beekeeper -e ${ACCESS_ID}_API_KEY=API_KEY_FOR_${ACCESS_ID} -d -p 3000:3000 -v /var/run:/var/run docker-registry.gopex.be:5000/gopex/beekeeper:0.2.0
 ```
 
-
 ### Parameters
 
 General parameters are handled through Docker:
@@ -34,7 +33,8 @@ Beekeeper specific configuration are handled through Docker via environment vari
 - __Docker host__ `-e DOCKER_HOST_URL=tcp://DOCKER_HOST_IP:DOCKER_HOST_PORT` - Will connect Beekeeper to the given docker host url via TCP. This will override any Docker socket usage, meaning mounting a Docker socket is not needed anymore. You'll need to ([bind docker daemon to a network interface](https://docs.docker.com/engine/quickstart/#bind-docker-to-another-host-port-or-a-unix-socket)) to use this feature. Default is to use docker unix socket.
 - __Beekeeper bind__ `-e BIND=unix:///var/run/beekeeper_puma.sock` - Will configure Beekeeper to listen on a specific unix socket. Use you also use it to configure Beekeeper to listen on a specific network interface/port but be careful as the default Beekeeper image only expose port 3000. Default to `tcp://0.0.0.0:3000`
 - __Beekeeper concurrency__ `-e CONCURRENCY=4` - Will set the Beekeeper concurrency level to 4. Default is 2.
-- __Beeleeper maximum threads__ `-e MAX_THREADS=20` - Will set Beekeeper maximum threads per concurrency to 20. Default is 10.
+- __Beekeeper maximum threads__ `-e MAX_THREADS=20` - Will set Beekeeper maximum threads per concurrency to 20. Default is 10.
+- __Rails environment__ `-e RAILS_ENV=production` - Will set rails environment to production. Default is development.
 
 ### Resource name
 
