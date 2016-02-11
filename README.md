@@ -78,9 +78,7 @@ API documentation
 Usage examples
 --------------
 
-### Using curl
-
-#### Deprecated since Beekeeper 0.2.0 use https://github.com/mgomes/api_auth/ as authentication mechanism, use https://bitbucket.org/gopex/beekeeper-api instead !
+### Using curl (Deprecated since Beekeeper 0.2.0 use https://github.com/mgomes/api_auth/ as authentication mechanism, use https://bitbucket.org/gopex/beekeeper-api instead !)
 
 #### Create a basic bee
 
