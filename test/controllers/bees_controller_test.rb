@@ -43,6 +43,14 @@ class BeesControllerTest < ActionDispatch::IntegrationTest
     assert_equal container_id, response['id']
   end
 
+  test "should get not found" do
+    get "/bees/1337"
+    assert_response :not_found
+
+    response = JSON.parse(@response.body)
+    assert_not_nil response['exception']
+  end
+
   test "should create bee" do
     post '/bees', params: {
       container: {

@@ -1,4 +1,6 @@
 class BeesController < ApplicationController
+  rescue_from Docker::Error::NotFoundError, with: :bee_not_found
+
   def index
     bees = {}
     Beekeeper::DockerHelper.get_all_bees.each do |bee|
@@ -70,5 +72,11 @@ class BeesController < ApplicationController
       end
     end
     bee_addresses
+  end
+
+  private
+
+  def bee_not_found(error)
+    render json: {exception: error.message}, status: :not_found
   end
 end
