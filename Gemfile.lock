@@ -1,6 +1,6 @@
 GIT
   remote: git://github.com/GoPex/docker-api.git
-  revision: 38f53dcf13626359fb0485ecab42c654ac457d00
+  revision: 6ccb9e488b2b7993db86d67b3da76ffd6aa18e17
   branch: master
   specs:
     docker-api (1.26.0)
