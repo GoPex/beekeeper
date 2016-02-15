@@ -3,7 +3,7 @@ class BeesController < ApplicationController
 
   def index
     bees = {}
-    Beekeeper::DockerHelper.get_all_bees.each do |bee|
+    DockerHelper.get_all_bees.each do |bee|
       bee_json = bee.json
       bee_addresses = parse_addresses(bee_json)
       bees[bee_json['Id']] = {status: bee_json['State']['Status'],
@@ -31,15 +31,10 @@ class BeesController < ApplicationController
       ports[port] = [{}]
     end
 
-    bee = Docker::Container.create(Image: permitted_params[:image],
-                                   Entrypoint: permitted_params[:entrypoint],
-                                   Cmd: permitted_params[:parameters],
-                                   Labels: { beekeeper: "#{Beekeeper::VERSION}" },
-                                   HostConfig: {
-                                    PortBindings: ports
-                                   })
-    bee.start
-
+    bee = DockerHelper.run(permitted_params[:image],
+                           permitted_params[:entrypoint],
+                           permitted_params[:parameters],
+                           ports)
     bee_json = bee.json
     bee_addresses = parse_addresses(bee_json)
 

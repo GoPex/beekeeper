@@ -27,9 +27,6 @@ module Beekeeper
     # Skip views, helpers and assets when generating a new resource.
     config.api_only = true
 
-    # Loads lib files
-    config.autoload_paths << Rails.root.join('lib')
-
     # Set logger to STDOUT
     config.logger = Logger.new(STDOUT)
 
