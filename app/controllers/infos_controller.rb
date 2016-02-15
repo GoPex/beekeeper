@@ -1,6 +1,6 @@
 class InfosController < ApplicationController
   def version
-    render json: {version: Beekeeper::VERSION, api_version: Beekeeper::API_VERSION}
+    render json: {version: BeekeeperHelper::VERSION, api_version: BeekeeperHelper::API_VERSION}
   end
 
   def docker_version

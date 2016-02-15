@@ -1,4 +1,4 @@
-module Beekeeper
+module BeekeeperHelper
   # The version of Beekeeper.
   VERSION = '0.3.0'
 

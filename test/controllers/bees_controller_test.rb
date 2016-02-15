@@ -3,19 +3,19 @@ require 'test_helper'
 class BeesControllerTest < ActionDispatch::IntegrationTest
 
   def setup
-    # Create a test image from a test Dockerfile
-    @image = Docker::Image.build_from_dir(Rails.root.join('test', 'fixtures', 'files', '.').to_path, t: "gopex/beekeeper_test_image:#{rand(10000)}")
-    @image_name = @image.json['RepoTags'].first
+      # Create a test image from a test Dockerfile
+      @image_name="gopex/beekeeper_test_image:#{rand(10000)}"
+      @image = Docker::Image.build_from_dir(Rails.root.join('test', 'fixtures', 'files', '.').to_path, t: @image_name)
   end
 
   def teardown
     # Remove all remaining bees
-    Beekeeper::DockerHelper.get_all_bees.each do |container|
-      container.delete('force': 'true')
+    DockerHelper.get_all_bees.each do |bee|
+      bee.delete('force': 'true')
     end
 
     # Remove created image
-    @image.remove(force: true)
+    @image.remove(name: @image_name)
     @image = nil
   end
 
@@ -29,7 +29,7 @@ class BeesControllerTest < ActionDispatch::IntegrationTest
 
     response = JSON.parse(@response.body)
     assert_equal 3, response.count
-    assert_equal Beekeeper::DockerHelper.get_all_bees.count, response.count
+    assert_equal DockerHelper.get_all_bees.count, response.count
   end
 
   test "should get show" do
@@ -107,6 +107,39 @@ class BeesControllerTest < ActionDispatch::IntegrationTest
 
     assert_raise Docker::Error::NotFoundError do
       Docker::Container.get(container_id)
+    end
+  end
+
+  test "should create bee even if image was not pulled" do
+    image_name_to_force_pull = 'gopex/beekeeper_test_image:latest'
+    begin
+      Docker::Image.remove(image_name_to_force_pull)
+    rescue Docker::Error::NotFoundError
+    end
+
+    assert_raise Docker::Error::NotFoundError do
+      Docker::Image.get(image_name_to_force_pull)
+    end
+
+    post '/bees', params: {
+      container: {
+        image: image_name_to_force_pull,
+        entrypoint: 'tail',
+        parameters: ['-f', '/dev/null']
+      }
+    }
+    assert_response :success
+
+    response = JSON.parse(@response.body)
+    assert_not_nil response['id']
+    assert_not_nil response['status']
+    assert_nil response['addresses']['3000/tcp']
+
+    assert_nothing_raised do
+      container = Docker::Container.get(response['id'])
+      assert container.json['State']['Status'] == response['status']
+      container.delete(force: true)
+      Docker::Image.remove(image_name_to_force_pull)
     end
   end
 end
