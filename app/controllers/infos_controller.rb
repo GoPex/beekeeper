@@ -1,6 +1,7 @@
 class InfosController < ApplicationController
 
   def ping
+    render json: {pong: 'OK'}
   end
 
   def status

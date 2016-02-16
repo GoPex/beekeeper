@@ -4,6 +4,9 @@ class InfosControllerTest < ActionDispatch::IntegrationTest
   test "shoud get ping" do
     get '/info/ping'
     assert_response :success
+
+    response = JSON.parse(@response.body)
+    assert_equal 'OK', response['pong']
   end
 
   test "shoud get status" do
