@@ -13,7 +13,7 @@ As Beekeeper is packaged in a Docker container, to install it, you must have doc
 You can start Beekeeper without configuration with:
 
 ```shell
-sudo docker run --name beekeeper -e ${ACCESS_ID}_API_KEY=API_KEY_FOR_${ACCESS_ID} -d -p 3000:3000 -v /var/run:/var/run docker-registry.gopex.be:5000/gopex/beekeeper:0.2.0
+sudo docker run --name beekeeper -e ${ACCESS_ID}_API_KEY=API_KEY_FOR_${ACCESS_ID} -d -p 3000:3000 -v /var/run:/var/run docker-registry.gopex.be:5000/gopex/beekeeper:0.4.0
 ```
 
 ### Parameters
@@ -21,7 +21,7 @@ sudo docker run --name beekeeper -e ${ACCESS_ID}_API_KEY=API_KEY_FOR_${ACCESS_ID
 General parameters are handled through Docker:
 
 - __Name__ `--name beekeeper` - Name given to the container running Beekeeper, optional but make life easier.
-- __Api key__ `-e ${ACCESS_ID}_API_KEY` - As version 0.2.0, you must use the authentication mechanism. To do so, give an environment variable with the secret key to use for a given access id. For example, if my access id is 1337, the name would be `1337_API_KEY`.
+- __Api key__ `-e ${ACCESS_ID}_API_KEY` - As from version 0.2.0, you must use the authentication mechanism. To do so, give an environment variable with the secret key to use for a given access id. For example, if my access id is 1337, the name would be `1337_API_KEY`.
 - __Daemon mode__ `-d` - Make the container launched to run as a daemon. Remove the `-d` flag to see Beekeeper's logs as STDOUT or use the `docker logs -f` command.
 - __Port__ `-p 3000:3000` - the port to open, Beekeeper listen to port 3000 by default.
 - __Docker socket__ `-v /var/run:/var/run` - will mount your local daemon host socket to beekeeper container.
@@ -45,6 +45,12 @@ API documentation
 -----------------
 
 ### Informations about Beekeeper
+
+#### Ping beekeeper 
+`GET    /info/ping(.json)`
+
+#### Get beekeeper status
+`GET    /info/status(.json)`
 
 #### Get beekeeper version
 `GET    /info/version(.json)`
