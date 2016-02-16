@@ -59,11 +59,13 @@ class BeesController < ApplicationController
   def parse_addresses(bee_json)
     ports = bee_json['NetworkSettings']['Ports']
     bee_addresses = {}
+
     ports.each do |port_requested, port_exposed|
       if port_exposed.is_a?(NilClass)
         bee_addresses["#{port_requested}"] = nil
       else
-        bee_addresses["#{port_requested}"] = "#{port_exposed[0]['HostIp']}:#{port_exposed[0]['HostPort']}"
+        docker_host_public_url = ENV.fetch('DOCKER_HOST_PUBLIC_URL') { ENV.fetch('DOCKER_HOST_URL') { '127.0.0.1'  } }
+        bee_addresses["#{port_requested}"] = "#{docker_host_public_url}:#{port_exposed[0]['HostPort']}"
       end
     end
     bee_addresses
