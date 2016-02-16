@@ -1,4 +1,12 @@
 class InfosController < ApplicationController
+
+  def ping
+  end
+
+  def status
+    render json: {status: 'OK', docker_host_status: Docker.ping}
+  end
+
   def version
     render json: {version: BeekeeperHelper::VERSION, api_version: BeekeeperHelper::API_VERSION}
   end
