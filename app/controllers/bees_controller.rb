@@ -32,9 +32,10 @@ class BeesController < ApplicationController
     end
 
     bee = DockerHelper.run(permitted_params[:image],
-                           permitted_params[:entrypoint],
-                           permitted_params[:parameters],
-                           ports)
+                           registry: permitted_params[:registry],
+                           entrypoint: permitted_params[:entrypoint],
+                           parameters: permitted_params[:parameters],
+                           ports: ports)
     bee_json = bee.json
     bee_addresses = parse_addresses(bee_json)
 
@@ -53,7 +54,7 @@ class BeesController < ApplicationController
   private
 
   def container_params
-    params.require(:container).permit(:image, :entrypoint, parameters: [], ports: [])
+    params.require(:container).permit(:image, :registry, :entrypoint, parameters: [], ports: [])
   end
 
   def parse_addresses(bee_json)

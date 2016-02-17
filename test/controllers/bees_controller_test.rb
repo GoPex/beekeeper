@@ -142,4 +142,40 @@ class BeesControllerTest < ActionDispatch::IntegrationTest
       Docker::Image.remove(image_name_to_force_pull)
     end
   end
+
+  test "should create bee even if image was not pulled from secure registry" do
+    image_name = 'gopex/beekeeper_test_image:latest'
+    registry = 'docker-registry.gopex.be:5000'
+    image_name_to_force_pull = "#{registry}/#{image_name}"
+    begin
+      Docker::Image.remove(image_name_to_force_pull)
+    rescue Docker::Error::NotFoundError
+    end
+
+    assert_raise Docker::Error::NotFoundError do
+      Docker::Image.get(image_name_to_force_pull)
+    end
+
+    post '/bees', params: {
+      container: {
+        image: image_name,
+        registry: registry,
+        entrypoint: 'tail',
+        parameters: ['-f', '/dev/null']
+      }
+    }
+    assert_response :success
+
+    response = JSON.parse(@response.body)
+    refute_nil response['id']
+    refute_nil response['status']
+    assert_nil response['addresses']['3000/tcp']
+
+    assert_nothing_raised do
+      container = Docker::Container.get(response['id'])
+      assert_equal container.json['State']['Status'], response['status']
+      container.delete(force: true)
+      Docker::Image.remove(image_name_to_force_pull)
+    end
+  end
 end

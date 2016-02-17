@@ -36,6 +36,7 @@ Beekeeper specific configuration are handled through Docker via environment vari
 - __Beekeeper concurrency__ `-e CONCURRENCY=4` - Will set the Beekeeper concurrency level to 4. Default is 2.
 - __Beekeeper maximum threads__ `-e MAX_THREADS=20` - Will set Beekeeper maximum threads per concurrency to 20. Default is 10.
 - __Rails environment__ `-e RAILS_ENV=production` - Will set rails environment to production. Default is development.
+- __Beekeeper registry password__ `BEEKEEPER_REGISTRY_PASSWORD=PASSWORD` - Will be used by Beekeeper to handle registry when specified. Beekeeper will always use credentials to call private registry for the moment.
 
 ### Resource name
 
@@ -75,6 +76,7 @@ API documentation
 ##### JSON parameters
 - __container__ `Hash` :
     - __image__ `String` - Image to use, must be complete if you want to use a private registry as Docker hub is used by default.
+    - __registry__ `String` - If your image is not hosted publicly on the docker hub, you must specify the registry using this parameter. Credentials used to connect to the hub will be beekeeper:$BEEKEEPER_REGISTRY_PASSWORD.
     - __entrypoint__ `String (optional)` - Entry point to use when starting the container. This will overwrite any `ENTRYPOINT` defined in the image used.
     - __parameters__ `[String] (optional)` - Parameters used by the entry point when starting the container. This will overwrite any `CMD` defined in the image used.
     - __ports__ `[String] (optional)` - Ports to expose when starting the container. This port must be exposed in the image as Beekeeper will not expose port dynamically.

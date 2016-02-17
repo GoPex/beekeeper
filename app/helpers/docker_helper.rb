@@ -4,9 +4,9 @@ class DockerHelper
     Docker::Container.all(all: 1, filters: { label: [ "beekeeper" ] }.to_json)
   end
 
-  def self.create(image, entrypoint, parameters, ports)
+  def self.create(image, registry: nil, entrypoint: nil, parameters: nil, ports: nil)
     # Create a container using parameters and a label named beekeeper
-    Docker::Container.create(Image: image,
+    Docker::Container.create(Image: self.image_full_tag(image, registry),
                              Entrypoint: entrypoint,
                              Cmd: parameters,
                              Labels: { beekeeper: "#{BeekeeperHelper::VERSION}" },
@@ -15,14 +15,22 @@ class DockerHelper
                              })
   end
 
-  def self.run(image, entrypoint, parameters, ports)
+  def self.pull(image, registry: nil)
+    creds = nil
+    if registry
+      creds = {username: 'beekeeper', password: ENV.fetch('BEEKEEPER_REGISTRY_PASSWORD') { '' }, email: 'beekeeper@gopex.be', serveraddress: registry}
+    end
+    Docker::Image.create({fromImage: self.image_full_tag(image, registry)}, creds)
+  end
+
+  def self.run(image, registry: nil, entrypoint: nil, parameters: nil, ports: nil)
     begin
       # Create the container
-      bee = self.create(image, entrypoint, parameters, ports)
+      bee = self.create(image, registry: registry, entrypoint: entrypoint, parameters: parameters, ports: ports)
     rescue Docker::Error::NotFoundError
       # The image doesn't exist on the host, pull it explicitly before creating the container
-      Docker::Image.create(fromImage: image)
-      bee = self.create(image, entrypoint, parameters, ports)
+      self.pull(image, registry: registry)
+      bee = self.create(image, registry: registry, entrypoint: entrypoint, parameters: parameters, ports: ports)
     end
 
     # Start the container
@@ -30,5 +38,15 @@ class DockerHelper
 
     # Return the running bee
     bee
+  end
+
+  private
+
+  def self.image_full_tag(image, registry)
+    if registry
+      "#{registry}/#{image}"
+    else
+      image
+    end
   end
 end
