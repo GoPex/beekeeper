@@ -48,7 +48,7 @@ class BeesControllerTest < ActionDispatch::IntegrationTest
     assert_response :not_found
 
     response = JSON.parse(@response.body)
-    assert_not_nil response['exception']
+    refute_nil response['exception']
   end
 
   test "should create bee" do
@@ -62,13 +62,13 @@ class BeesControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
 
     response = JSON.parse(@response.body)
-    assert_not_nil response['id']
-    assert_not_nil response['status']
+    refute_nil response['id']
+    refute_nil response['status']
     assert_nil response['addresses']['3000/tcp']
 
     assert_nothing_raised do
       container = Docker::Container.get(response['id'])
-      assert container.json['State']['Status'] == response['status']
+      assert_equal container.json['State']['Status'], response['status']
     end
   end
 
@@ -84,13 +84,13 @@ class BeesControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
 
     response = JSON.parse(@response.body)
-    assert_not_nil response['id']
-    assert_not_nil response['status']
-    assert_not_nil response['addresses']['3000/tcp']
+    refute_nil response['id']
+    refute_nil response['status']
+    refute_nil response['addresses']['3000/tcp']
 
     assert_nothing_raised do
       container = Docker::Container.get(response['id'])
-      assert container.json['State']['Status'] == response['status']
+      assert_equal container.json['State']['Status'], response['status']
     end
   end
 
@@ -102,8 +102,8 @@ class BeesControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
 
     response = JSON.parse(@response.body)
-    assert_not_nil response['id']
-    assert_not_nil response['status']
+    refute_nil response['id']
+    refute_nil response['status']
 
     assert_raise Docker::Error::NotFoundError do
       Docker::Container.get(container_id)
@@ -131,8 +131,8 @@ class BeesControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
 
     response = JSON.parse(@response.body)
-    assert_not_nil response['id']
-    assert_not_nil response['status']
+    refute_nil response['id']
+    refute_nil response['status']
     assert_nil response['addresses']['3000/tcp']
 
     assert_nothing_raised do
